@@ -9,7 +9,6 @@
 _An attempt to build a Star Citizen Calculator and learn some Vue.js._
 
 A simple Star Citizen mining calculator for MOLE and Prospector users.
-You can find it on: [sc-mining.app](https://sc-mining-calc.github.io)
 
 ## Install
 You can use this project locally on your PC or on your favorite host. All you
