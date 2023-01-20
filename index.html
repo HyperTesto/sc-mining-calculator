@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="HyperTesto">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+    <title>Star Citizen mining calculator</title>
+
+</head>
+
+
+<body class="d-flex flex-column h-100">
+
+    <!-- Begin page content -->
+    <main class="flex-shrink-0" id="app">
+        <div class="container-fluid row ">
+            <section class="col-6">
+                <h1 class="m-2">Rock data</h1>
+                <div class="row m-2">
+                    <div class="card col-xl-5 col-lg-12">
+                        <div class="card-body">
+                            <h5 class="card-title">Mass</h5>
+                            <input type="text" class="form-control" v-model="mass">
+                        </div>
+                    </div>
+
+                    <div class="card col-xl-7 col-lg-12">
+                        <div class="card-body">
+                            <h5 class="card-title">Result</h5>
+                            <p class="card-text"><b>Value:</b><span> {{ numericTotal }} </span> aUEC <span class="ml-2">({{ worthMaterial }}% Worth + {{ inertMaterial }}% Inert)</p>
+                                <a class="btn btn-primary" v-on:click="addCurrentRockToCargo"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16">
+  <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+  <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+</svg> Add to my cargo</a>
+                                <a href="#" class="btn btn-primary btn-danger"  v-on:click="clearData"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+</svg> Clear data</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row card m-2">
+                        <div class="card-body">
+                            <h5 class="card-title">Specs</h5>
+                            <form class="row g-3">
+                                <div class="col-xl-6 col-lg-12" v-for="item in items" :key="item.name">
+                                    <div class="input-group input-group-sm mb-1">
+                                        <span class="input-group-text" style="width:150px"><font v-bind:color="item.color"><b> {{ item.name }} </b></font></span>
+                                        <input type="text" class="form-control" v-bind:id="item.name" v-model="item.percentage">
+                                        <span class="input-group-text"> % </span>
+                                        <span class="input-group-text pull-right" style="width:100px"> {{ formatRockValue(item) }}</span>
+                                        <span class="input-group-text"> aUEC </span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="col-6">
+                    <h1 class="m-2">My cargo</h1>
+
+
+                    <div class="row m-2">
+                        <div class="card col-xl-5 col-lg-12">
+                            <div class="card-body">
+                                <h5 class="card-title">Total value: <b>{{ numericCargoValue }} aUEC</b></h5>
+                                <p class="card-text"><b>Total mass: </b>{{ numericCargoMass }}</p>
+                                <!--<p class="card-text"><span class="mr-2"><b>Worth:</b> {{ cargoWorth }}%</span>|<span class="ml-2"><b>Inert:</b> {{ cargoInert }}%</span></p>-->
+                                <a href="#" class="btn btn-primary btn-danger"  v-on:click="clearCargo"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+</svg> Empty cargo</a>
+                            </div>
+                        </div>
+                        <div class="card col-xl-7 col-lg-12">
+                            <div class="card-body">
+                                <h5 class="card-title">Composition:</h5>
+                                <div class="card-body p-1">
+                                    <span v-for="element in cargoSummary" class="badge bg-primary rounded-pill me-1 mb-2 p-2"> {{ element.name }} | {{ element.formattedPercentage }}% | {{ element.formattedSCU }} SCU | {{ element.formattedValue }} aUEC</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="row card m-2">
+                        <div class="card-body">
+                            <h5 class="card-title">Cargo details:</h5>
+                            <ul class="list-group">
+                                <div class="card mb-2" v-for="(miningRound, index) in cargo">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <span>
+                                            <span class="me-1"><b>#{{ index+1 }}</b></span>|
+                                            <span class="ms-1 me-1 ml-3"><b>Value:</b> {{ miningRound.formattedValue }} aUEC</span>|
+                                            <span class="ms-1 me-1 ml-3"><b>Quantanium SCU:</b> {{ miningRound.quantaniumSCU }}</span>|
+                                            <span class="ms-1 me-1 ml-3"><b>Mass:</b> {{ miningRound.mass }}</span>|
+                                            <span class="ms-1 me-1 ml-3"><b>Worth:</b> {{ miningRound.worthMaterial }}%</span>|
+                                            <span class="ms-1 ml-3"><b>Inert:</b> {{ miningRound.inertMaterial }}%</span>
+                                        </span>
+                                    </div>
+                                    <div class="card-body">
+                                        <span v-for="element in miningRound.composition" class="badge bg-primary rounded-pill me-1 mb-1 p-2"> {{ element.name }} | {{ element.percentage }}% | {{ _formatRockValue(element, miningRound.mass) }} aUEC</span>
+                                    </div>
+                                </div>
+
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer mt-auto py-3 bg-light">
+            <div class="container text-muted tex">
+                <span><b>Star Citizen mining calculator</b> 1.0.0</span>
+                <span>-</span>
+                <span>Made with ❤ by <a class="link-primary" href="https://www.hypertesto.me">HyperTesto</a></span>
+                <span>-</span>
+                <span>STAR-HDZS-3NJC</span>
+                <span>-</span>
+                <span><a class="link-primary" href="https://gitlab.com/HyperTesto/sc-mining.app"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-code" viewBox="0 0 16 16">
+  <path d="M5.854 4.854a.5.5 0 1 0-.708-.708l-3.5 3.5a.5.5 0 0 0 0 .708l3.5 3.5a.5.5 0 0 0 .708-.708L2.707 8l3.147-3.146zm4.292 0a.5.5 0 0 1 .708-.708l3.5 3.5a.5.5 0 0 1 0 .708l-3.5 3.5a.5.5 0 0 1-.708-.708L13.293 8l-3.147-3.146z"/>
+</svg> Source Code <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-code-slash" viewBox="0 0 16 16">
+  <path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294l4-13zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0zm6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0z"/>
+</svg></a></span>
+                <span>-</span>
+                <span><a class="link-primary" href="https://www.buymeacoffee.com/hypertesto"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cup" viewBox="0 0 16 16">
+  <path d="M1 2a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v1h.5A1.5 1.5 0 0 1 16 4.5v7a1.5 1.5 0 0 1-1.5 1.5h-.55a2.5 2.5 0 0 1-2.45 2h-8A2.5 2.5 0 0 1 1 12.5V2zm13 10h.5a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5H14v8zM13 2H2v10.5A1.5 1.5 0 0 0 3.5 14h8a1.5 1.5 0 0 0 1.5-1.5V2z"/>
+</svg> Buy me a coffee</a></span>
+            </div>
+        </footer>
+
+
+        <!-- Popper.js first, then Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
+
+        <!-- VUE -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+        <!-- APP -->
+        <script src="index.js"></script>
+
+    </body>
+    </html>
