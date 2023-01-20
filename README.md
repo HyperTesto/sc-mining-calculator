@@ -16,7 +16,7 @@ You can use this project locally on your PC or on your favorite host. All you
 need to do is clone the repo and open ```index.html``` with your favorite browser:
 
 ```bash
-$ git clone https://gitlab.com/HyperTesto/sc-mining.app
+$ git clone https://github.com/HyperTesto/sc-mining-calc.git
 ```
 
 ## Support
