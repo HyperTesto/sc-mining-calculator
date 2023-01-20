@@ -15,13 +15,13 @@ You can use this project locally on your PC or on your favorite host. All you
 need to do is clone the repo and open ```index.html``` with your favorite browser:
 
 ```bash
-$ git clone https://github.com/HyperTesto/sc-mining-calc.git
+$ git clone https://github.com/HyperTesto/sc-mining-calc.github.io.git
 ```
 
 ## Support
 Reach out to me at one of the following places:
 
-* on [issues page](https://github.com/HyperTesto/sc-mining-calc/issues) in the project repo
+* on [issues page](https://github.com/HyperTesto/sc-mining-calc.github.io/issues) in the project repo
 
 ## Donations
 If you find this tool useful and like to support its  development, then consider a donation.
